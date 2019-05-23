@@ -21,16 +21,14 @@ public:
         this->_d["level"] = to_string(level);
         this->_d["type"] = type;
         this->_d["car"] = "null";
-        this->_d["LastOperateTime"] = time(NULL);
-        this->_d["CreatedTime"] = time(NULL);
+        this->_d["LastOperateTime"] = to_string(time(NULL));
+        this->_d["CreatedTime"] = to_string(time(NULL));
         this->_isExist = true;
     };
 
-    Plot(const string& id){
+    Plot(const string& s){
 
-        this->_d = db.getData(id);
-        if(this->_d["_isExist"] == "NO") throw "Plot::Recover Data From NOTHING!!!";
-        this->_d.clear("_isExist");
+        this->_d = this->_d.strToData(s);
         this->_isExist = true;
     };
 
@@ -77,10 +75,16 @@ public:
         this->_d["type"] = type;
     };
 
-private:
+    friend class Park;
+
+//private:
     ovo::data _d;
     ovo::db db;
     bool _isExist;
+    string getStrContent(){
+
+        return this->_d.dataToStr(this->_d);
+    };
 
 
 };

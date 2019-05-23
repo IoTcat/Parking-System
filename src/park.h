@@ -6,6 +6,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <ctime>
 #include <map>
 #include <thread>
 #include "../lib/ovo.h"
@@ -34,15 +35,8 @@ public:
             this->_plotsList = db.getData(this->_d["plotsList"]);
             this->_carsList = db.getData(this->_d["carsList"]);
 
-            this->_plotsList.forEach([&](string first, string second){
-                this->_plots.push_back(Plot(first));
-            });
-
-            this->_carsList.forEach([&](string first, string second){
-                this->_cars.push_back(Car(first));
-            });
-
             this->_threadFinished = true;
+
         });
 
 
@@ -53,7 +47,6 @@ public:
     ~Park(){
 
         if(!this->_threadFinished) this->_t->join();
-        delete this->_t;
 
         this->_d.classify();
         this->_plotsList.classify();
@@ -64,7 +57,12 @@ public:
     };
 
     void join(){
-        if(!this->_threadFinished) this->_t->join();
+        if(!this->_threadFinished) 
+        {
+            this->_t->join();
+            delete this->_t;
+            this->_threadFinished = true;
+        }
     }
 
     bool isExist(){
@@ -79,19 +77,38 @@ public:
         if(!this->_threadFinished) this->_t->join();
         return this->_levels;
     }
-
+/*
     bool checkType(const string& type){
         if(!this->_threadFinished) this->_t->join();
         if(find(this->_types.begin(), this->_types.end(), type) == this->_types.end()){
             return false;
         }
         return true;
-    };
+    };*/
 
     std::vector<Plot> getPlots(){
         if(!this->_threadFinished) this->_t->join();
+        std::vector<Plot> v;
+        this->_plotsList.forEach([&](string first, string second){
+            v.push_back(Plot(second));
+        });
+        return v;
+    };
+
+    std::vector<string> getPlotsID(){
+        if(!this->_threadFinished) this->_t->join();
+        std::vector<string> v;
+        this->_plotsList.forEach([&](string first, string second){
+            v.push_back(this->_plotsList.strToData(second)["id"]);
+        });
+        return v;
+    };
+/*
+    std::vector<Plot> getPlots(bool isOccupied){
+        if(!this->_threadFinished) this->_t->join();
         return this->_plots;
     };
+
 
     std::vector<Plot> getPlots(const int& level){
         if(!this->_threadFinished) this->_t->join();
@@ -197,7 +214,7 @@ public:
         v1 = this->getCars(type);
         v2 = this->getCars(level);
 
-        /* 待实现 */
+        // 待实现 
 
         cout << endl << time(NULL) - t << endl;
         return v;
@@ -227,7 +244,7 @@ public:
         this->_carsList[licenseNum] = time(NULL);
         return c;
     };
-
+*/
 
     void ini(std::vector<std::map<string, int>>& v){
 
@@ -246,10 +263,6 @@ public:
             this->_d["types"] += i + "|||$$|||";
         }
         this->_setupPlots(v);
-        for(Plot i : this->_plots){
-
-            this->_plotsList[i.getID()] = time(NULL);
-        }
 
     };
     
@@ -261,8 +274,6 @@ public:
     ovo::math m;
     ovo::String S;
     ovo::db db;
-    std::vector<Plot> _plots;
-    std::vector<Car> _cars;
     std::thread *_t;
     bool _threadFinished;
 
@@ -282,18 +293,26 @@ public:
 
     void _setupPlots(std::vector<std::map<string, int>>& v){
 
+        int t = time(NULL);
         for(unsigned int i = 0; i < v.size(); i ++){
 
             for(auto ii : v[i]){
 
                 for(int iii = 0; iii < ii.second; iii ++){
-                    this->_plots.push_back(Plot(m.randStr(), i, ii.first));
+                    string s = m.randStr();
+                    this->_plotsList[s] = this->_simplePlot(s, i, ii.first);
                 }
             }
         }
+
+        cout << "Used" << time(NULL) - t;
     };
 
+    string _simplePlot(const string& id, const int& level, const string& type){
 
+        return "__OVO_DATA__id$$||$$" + id + "$$||$$level$$||$$" + to_string(level) + "$$||$$type$$||$$"
+        + type + "$$||$$car$$||$$null$$||$$LastOperateTime$$||$$null$$||$$CreatedTime$$||$$null$$||$$";
+    }
 
 };
 
