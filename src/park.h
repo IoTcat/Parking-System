@@ -25,6 +25,7 @@ public:
     Park(){
 
         this->_threadFinished = true;
+        this->_threadPointer = false;
 
         this->_d = db.getData(g_ParkID);
         if(!this->isExist()) return ;
@@ -33,12 +34,14 @@ public:
 
         this->_t = new std::thread([&]{
 
+            this->_threadPointer = true;
+
             this->_plotsList = db.getData(this->_d["plotsList"]);
             this->_carsList = db.getData(this->_d["carsList"]);
             this->_recoverTypes();
-            this->_feeTable.setTypes(this->_types);
             this->_levels = atoi(this->_d["levels"].c_str());
             this->_threadFinished = true;
+
 
         });
 
@@ -63,8 +66,16 @@ public:
         if(!this->_threadFinished) 
         {
             this->_t->join();
+
             delete this->_t;
+            this->_threadPointer = false;
             this->_threadFinished = true;
+        }
+
+        if(this->_threadPointer){
+
+            delete this->_t;
+            this->_threadPointer = false;
         }
     }
 
@@ -262,6 +273,7 @@ public:
         this->_d["carsList"] = m.randStr();
         this->_d["plotsList"] = m.randStr();
         this->_d["feeTable"] = m.randStr();
+        this->_d["log"] = m.randStr();
         this->_d["levels"] = to_string(this->_levels);
         this->_d["types"] = "";
         for(string i : this->_types){
@@ -270,6 +282,19 @@ public:
         }
         this->_setupPlots(v);
         this->_feeTable.setTypes(this->_types);
+
+        std::vector<string> vv;
+        vv.push_back("uid");
+        vv.push_back("licenseNum");
+        vv.push_back("type");
+        vv.push_back("level");
+        vv.push_back("plot");
+        vv.push_back("LastInTime");
+        vv.push_back("LastOutTime");
+        vv.push_back("fee");
+        vv.push_back("date");
+
+        db.createTable(this->_d["log"],  vv);
 
     };
 
@@ -640,12 +665,89 @@ public:
         
         Car c(this->_carsList[licenseNum]);
 
-        this->delCar(licenseNum);
+        int fee = this->_feeTable.getFee(c.getType(), c.getLastInTime(), c.getLastOutTime());
 
-        return this->_feeTable.getFee(c.getType(), c.getLastInTime(), c.getLastOutTime());
+        //this->_threadFinished = false;
+
+        //this->_t = new std::thread([&]{
+
+            //this->_threadPointer = true;
+
+            ovo::data d;
+            d["uid"] = m.randStr();
+            d["licenseNum"] = licenseNum;
+            d["type"] = c.getType();
+            d["plot"] = c.getPlot();
+            d["level"] = this->_simpleGet(this->_plotsList[c.getPlot()], "level");
+            d["LastInTime"] = c.getLastInTime();
+            d["LastOutTime"] = c.getLastOutTime();
+            d["fee"] = to_string(fee);
+            d["date"] = this->_getDate();
+
+            db.insertSQL(this->_d["log"], d);
+
+            this->delCar(licenseNum);
+
+            //this->_threadFinished = true;
+        //});
+
+        return fee;
     }
 
 
+    std::vector<ovo::data> getLog(ovo::data FilterData){
+
+        return db.getSQL(this->_d["log"], FilterData);
+    }
+
+
+    std::vector<ovo::data> getLog(){
+
+        return db.getSQL(this->_d["log"]);
+    }
+
+    std::vector<ovo::data> getLogByCarID(const string& licenseNum){
+
+        ovo::data d;
+        d["licenseNum"] = licenseNum;
+        return db.getSQL(this->_d["log"], d);
+    }
+
+    std::vector<ovo::data> getLogByType(const string& type){
+
+        ovo::data d;
+        d["type"] = type;
+        return db.getSQL(this->_d["log"], d);
+    }
+
+    std::vector<ovo::data> getLogByLevel(const int& level){
+
+        ovo::data d;
+        d["level"] = to_string(level);
+        return db.getSQL(this->_d["log"], d);
+    }
+
+    std::vector<ovo::data> getLogByFee(const int& fee){
+
+        ovo::data d;
+        d["fee"] = to_string(fee);
+        return db.getSQL(this->_d["log"], d);
+    }
+
+    std::vector<ovo::data> getLogByPlotID(const string& plot){
+
+        ovo::data d;
+        d["plot"] = plot;
+        return db.getSQL(this->_d["log"], d);
+    }
+
+
+    std::vector<ovo::data> getLogByDate(const string& date){ //2019-05-24
+
+        ovo::data d;
+        d["date"] = date;
+        return db.getSQL(this->_d["log"], d);
+    }
 
 //private:
     ovo::data _d, _carsList, _plotsList;
@@ -656,7 +758,7 @@ public:
     ovo::String S;
     ovo::db db;
     std::thread *_t;
-    bool _threadFinished;
+    bool _threadFinished, _threadPointer;
     FeeTable _feeTable;
 
     void _getTypes(std::vector<std::map<string, int>>& v){
@@ -736,6 +838,19 @@ public:
 
     bool isGoodType(const string& type){
         return (bool)(find(this->_types.begin(), this->_types.end(), type) == this->_types.end());
+    }
+
+    string _getDate(){
+        char now[64];
+        time_t tt;
+        struct tm *ttime;
+        //tt = atol(argv[1]);
+        //tt = 1212132599;  //uint
+        time(&tt);
+        ttime = localtime(&tt);
+        strftime(now,64,"%Y-%m-%d",ttime);
+        string s = now;
+        return s;
     }
 
 };

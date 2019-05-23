@@ -56,6 +56,7 @@ public:
 
 
     void set(std::map<string, std::vector<int>>& m){
+
         for(auto& i : m){
             if(this->_table.count(i.first)){
                 this->_table[i.first].erase(this->_table[i.first].begin(), this->_table[i.first].end());
@@ -90,7 +91,7 @@ public:
 
         int fee = 0;
 
-        for(int i = 0; i < hours; i ++){
+        for(int i = 0; i <= hours; i ++){
             fee += this->_table[type][i];
         }
 

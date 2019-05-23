@@ -12,29 +12,32 @@ int main(int argc, char const *argv[])
 {
 
     FeeTable t;
-
+/*
     std::vector<string> v;
 
-    v.push_back("car");
+    v.push_back("Cars");
     v.push_back("rac");
 
 
-    //t.setTypes(v);
-
-    std::map<string, std::vector<int>> m;
+    t.setTypes(v);
+*/
+    std::map<string, std::vector<int>> mm;
 
     std::vector<int> vv;
 
     vv.push_back(2);
     vv.push_back(3);
 
-    m["car"] = vv;
+    mm["Cars"] = vv;
+
+    t.set(mm);
+    cout << t.showAll();
 
     //t.set(m);
 
-    cout << t.getFee("car", "0", "10000");
+    //cout << t.getFee("car", "0", "10000");
 
-    cout << t.showAll();
+    //cout << t.showAll();
 
 
 /*
@@ -48,11 +51,11 @@ int main(int argc, char const *argv[])
 */
 
 
-/*
+
    
     Park p;
 
-    cout << p.isExist();
+    //cout << p.isExist();
 
     std::vector<map<string, int>> v;
 
@@ -66,23 +69,33 @@ int main(int argc, char const *argv[])
     m["Carsss"] = 99;
     v.push_back(m);
 
-    //p.ini(v);
+    p.ini(v);
+    //p.updateFeeTable(mm);
 
     //cout << p.checkType("Cadrs");
     
 
 
     p.join();
-    cout << p._d.showAll();
+
+
+    p.checkIn("2333", "Cars");
+    cout << p.checkOut("2333");
+    //cout << p._feeTable.showAll();
+
+    //cout << p._d.showAll();
+    //
+/*
     string kk = "";
     if(!p.newCar("110", "Cars", p.getPlotsID("Cars", false)[0], kk))cout << kk;
 
-    int t = time(NULL);
+    int t = time(NULL);*/
     string s = "Cars";
-    cout << endl<<p.getPlotsID("Cars", false).size();
-    for(auto i : p.getPlotsID("Cars", false)){
+    //cout << endl<<p.getPlotsID("Cars", false).size();
+
+    for(auto i : p.getPlotsID(s)){
         cout << p.getPlot(i).showAll();
-    }
+    }/*
 
     for(auto i : p.getCarsID(0)){
         cout << i;
@@ -91,5 +104,9 @@ int main(int argc, char const *argv[])
 //p.delCar("110");
     cout << p.getPlotByCar("110").showAll();
 */
+        for(auto i : p.getLogByDate("2019-05-23")){
+            cout << i.showAll();
+        }
+
     return 0;
 }
