@@ -19,30 +19,32 @@
 + `void updateFeeTable(std::map<string, std::vector<int>>& m)`: 更新费用计算方法。map的键名是种类type, 键值是这个type的计费方式，用vector表示。注意vector从0开始，顺序对应小时，最大为24小时。对应的值是这一小时的计费。
 
 ### 获取车位函数
-+ `std::vector<Plot> getPlots()`: 获取全部车位
-+ `std::vector<Plot> getPlots(const bool isOccupied)`: 获取全部占有/未占有车位
-+ `std::vector<Plot> getPlots(const int& level)`: 获取某一层的全部车位
-+ `std::vector<Plot> getPlots(const int& level, const bool isOccupied)`: 获取某一层的已占有/未占有车位
-+ `std::vector<Plot> getPlots(const string& type)`: 获取某一类型全部车位
-+ `std::vector<Plot> getPlots(const string& type, const bool isOccupied)`: 获取某一类型占有/未占有车位
-+ `std::vector<Plot> getPlots(const int& level, const string& type)`: 获取某一层，某一种类全部车位
-+ `std::vector<Plot> getPlots(const int& level, const string& type, const bool isOccupied)`: 获取某一层，某一种类占有/未占有车位
-+ `Plot getPlot(const string& licenseNum)`: 根据车牌号获取车位
-+ `Plot getPlot(const Car& car)`: 根据car对象获取车位
++ `std::vector<string> getPlotsID()`: 获取全部车位ID
++ `std::vector<string> getPlotsID(const bool isOccupied)`: 获取全部占有/未占有车位ID
++ `std::vector<string> getPlotsID(const int& level)`: 获取某一层的全部车位ID
++ `std::vector<string> getPlotsID(const int& level, const bool isOccupied)`: 获取某一层的已占有/未占有车位ID
++ `std::vector<string> getPlotsID(const string& type)`: 获取某一类型全部车位ID
++ `std::vector<string> getPlotsID(const string& type, const bool isOccupied)`: 获取某一类型占有/未占有车位ID
++ `std::vector<string> getPlotsID(const int& level, const string& type)`: 获取某一层，某一种类全部车位ID
++ `std::vector<string> getPlotsID(const int& level, const string& type, const bool isOccupied)`: 获取某一层，某一种类占有/未占有车位ID
++ `Plot getPlot(const string& id)`: 根据ID获取车位对象
++ `Plot getPlotByCar(const string& licenseNum)`: 根据车牌号获取车位对象
++ `Plot getPlotByCar(const Car& car)`: 根据car对象获取车位对象
 
 > 注：通过牌号等返回的Plot可能不存在，使用前请使用`bool Plot.isExist()`判断
 
 ### 获取车函数
-+ `std::vector<Car> getCars()`: 获取全部停车场中的车
-+ `std::vector<Car> getCars(const int& level)`: 获取某一层的全部车
-+ `std::vector<Car> getCars(const string& type)`: 获取某一类型全部车
-+ `std::vector<Car> getCars(const int& level, const string& type)`: 获取某一层，某一种类全部车位
-+ `Car getCar(const string& licenseNum)`: 根据车牌号获取车
-+ `Car getCar(const Plot& plot)`: 根据plot对象获取车
++ `std::vector<string> getCarsID()`: 获取全部停车场中的车牌号
++ `std::vector<string> getCarsID(const int& level)`: 获取某一层的全部车牌号
++ `std::vector<string> getCarsID(const string& type)`: 获取某一类型全部车牌号
++ `std::vector<string> getCarsID(const int& level, const string& type)`: 获取某一层，某一种类全部车牌号
++ `Car getCar(const string& licenseNum)`: 根据车牌号获取车对象
++ `Car getCarByPlot(const string& id)`: 根据plot的id获取车对象
++ `Car getCarByPlot(const Plot& plot)`: 根据plot对象获取车对象
 
 ### 功能函数
-+ `void checkIn(const string& licenseNum, const string& type)`: 本函数适用于车进入停车场时登记。
-+ `void checkIn(const string& licenseNum, const string& type, const int& level)`: 指定层数登记。使用前请务必保证对应层数有空车位！
++ `bool checkIn(const string& licenseNum, const string& type)`: 本函数适用于车进入停车场时登记。成功返回true，失败(车位已满)返回false。
++ `bool checkIn(const string& licenseNum, const string& type, const int& level)`: 指定层数登记。成功返回true，失败返回false。
 + `int checkOut(const string& licenseNum)`: 车出停车场时结算，输出整数金额。
 
 ### 更改设置函数
