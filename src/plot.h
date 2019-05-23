@@ -27,20 +27,24 @@ public:
     };
 
     Plot(const string& s){
-
+        this->_isExist = false;
+        if(s == "undefined"){
+            return;
+        }
         this->_d = this->_d.strToData(s);
+        if(this->_d["id"] == "undefined"){
+            return;
+        }
         this->_isExist = true;
     };
 
-    Plot(const string& id, const string& isExist){
+    Plot(){
 
         this->_isExist = false;
     };
     
     ~Plot(){
 
-        this->_d.classify();
-        db.pushData(this->_d["id"], this->_d);
     };
 
     inline isExist(){
@@ -67,23 +71,28 @@ public:
         return (this->_d["car"] == "null") ? false : true;
     };
 
-    inline void updateLevel(const unsigned int& level){
-        this->_d["level"] = to_string(level);
-    };
 
-    inline void updateType(const string& type){
-        this->_d["type"] = type;
+
+    inline string showAll(){
+        return this->_d.showAll();
     };
 
     friend class Park;
 
 //private:
     ovo::data _d;
-    ovo::db db;
     bool _isExist;
     string getStrContent(){
 
         return this->_d.dataToStr(this->_d);
+    };
+
+    inline void updateLevel(const unsigned int& level){
+        this->_d["level"] = to_string(level);
+    };
+
+    inline void updateType(const string& type){
+        this->_d["type"] = type;
     };
 
 

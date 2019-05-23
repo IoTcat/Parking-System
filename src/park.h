@@ -13,6 +13,7 @@
 
 #include "plot.h"
 #include "car.h"
+#include "feeTable.h"
 
 const string g_ParkID = "EEE102AS4";
 
@@ -34,7 +35,9 @@ public:
 
             this->_plotsList = db.getData(this->_d["plotsList"]);
             this->_carsList = db.getData(this->_d["carsList"]);
-
+            this->_recoverTypes();
+            this->_feeTable.setTypes(this->_types);
+            this->_levels = atoi(this->_d["levels"].c_str());
             this->_threadFinished = true;
 
         });
@@ -84,7 +87,7 @@ public:
             return false;
         }
         return true;
-    };*/
+    };
 
     std::vector<Plot> getPlots(){
         if(!this->_threadFinished) this->_t->join();
@@ -94,15 +97,15 @@ public:
         });
         return v;
     };
-
-    std::vector<string> getPlotsID(){
+*/
+  /*  std::vector<string> getPlotsID(){
         if(!this->_threadFinished) this->_t->join();
         std::vector<string> v;
         this->_plotsList.forEach([&](string first, string second){
             v.push_back(this->_plotsList.strToData(second)["id"]);
         });
         return v;
-    };
+    };*/
 /*
     std::vector<Plot> getPlots(bool isOccupied){
         if(!this->_threadFinished) this->_t->join();
@@ -251,24 +254,402 @@ public:
         if(!this->_threadFinished) this->_t->join();
 
         this->_d.clear();
+        this->_plotsList.clear();
+        this->_carsList.clear();
         this->_getTypes(v);
         this->_levels = v.size();
         this->_d["id"] = g_ParkID;
         this->_d["carsList"] = m.randStr();
         this->_d["plotsList"] = m.randStr();
-        this->_d["levels"] = this->_levels;
+        this->_d["feeTable"] = m.randStr();
+        this->_d["levels"] = to_string(this->_levels);
         this->_d["types"] = "";
         for(string i : this->_types){
 
             this->_d["types"] += i + "|||$$|||";
         }
         this->_setupPlots(v);
+        this->_feeTable.setTypes(this->_types);
 
     };
+
+    void updateFeeTable(std::map<string, std::vector<int>>& m){
+        this->_feeTable.set(m);
+    }
     
+    vector<string> getPlotsID(){
+        if(!this->_threadFinished) this->_t->join();
+        std::vector<string> v;
+        this->_plotsList.forEach([&](string first, string second){
+            v.push_back(first);
+        });
+
+        return v;
+    };
+
+    std::vector<string> getPlotsID(const bool& isOccupied){
+        if(!this->_threadFinished) this->_t->join();
+        std::vector<string> v;
+        this->_plotsList.forEach([&](string first, string second){
+            if(isOccupied && this->_simpleGet(second, "car") != "null") v.push_back(first);
+            if(!isOccupied && this->_simpleGet(second, "car") == "null") v.push_back(first);
+        });
+        return v;
+    };
+
+    std::vector<string> getPlotsID(const int& level){
+        if(!this->_threadFinished) this->_t->join();
+        std::vector<string> v;
+        this->_plotsList.forEach([&](string first, string second){
+            if(this->_simpleGet(second, "level") == to_string(level)) v.push_back(first);
+        });
+        return v;
+    };
+
+    std::vector<string> getPlotsID(const string& type){
+        if(!this->_threadFinished) this->_t->join();
+        std::vector<string> v;
+        this->_plotsList.forEach([&](string first, string second){
+            if(this->_simpleGet(second, "type") == type) v.push_back(first);
+        });
+        return v;
+    };
+
+    std::vector<string> getPlotsID(const int& level, const bool& isOccupied){
+        if(!this->_threadFinished) this->_t->join();
+        std::vector<string> v;
+        this->_plotsList.forEach([&](string first, string second){
+            if(isOccupied && this->_simpleGet(second, "car") != "null" && this->_simpleGet(second, "level") == to_string(level)) v.push_back(first);
+            if(!isOccupied && this->_simpleGet(second, "car") == "null" && this->_simpleGet(second, "level") == to_string(level)) v.push_back(first);
+        });
+        return v;
+    };
+
+    std::vector<string> getPlotsID(const string& type, const bool& isOccupied){
+        if(!this->_threadFinished) this->_t->join();
+        std::vector<string> v;
+        this->_plotsList.forEach([&](string first, string second){
+            if(isOccupied && this->_simpleGet(second, "car") != "null" && this->_simpleGet(second, "type") == type) v.push_back(first);
+            if(!isOccupied && this->_simpleGet(second, "car") == "null" && this->_simpleGet(second, "type") == type) v.push_back(first);
+        });
+        return v;
+    };
+
+
+    std::vector<string> getPlotsID(const int& level, const string& type){
+        if(!this->_threadFinished) this->_t->join();
+        std::vector<string> v;
+        this->_plotsList.forEach([&](string first, string second){
+            if(this->_simpleGet(second, "level") == to_string(level) && this->_simpleGet(second, "type") == type) v.push_back(first);
+        });
+        return v;
+    };
+
+    std::vector<string> getPlotsID(const string& type, const int& level){
+
+        return this->getPlotsID(level, type);
+    }
+
+
+    std::vector<string> getPlotsID(const int& level, const string& type, const bool& isOccupied){
+        if(!this->_threadFinished) this->_t->join();
+        std::vector<string> v;
+        this->_plotsList.forEach([&](string first, string second){
+            if(isOccupied && this->_simpleGet(second, "car") != "null" && this->_simpleGet(second, "level") == to_string(level) && this->_simpleGet(second, "type") == type) v.push_back(first);
+            if(!isOccupied && this->_simpleGet(second, "car") == "null" && this->_simpleGet(second, "level") == to_string(level) && this->_simpleGet(second, "type") == type) v.push_back(first);
+        });
+        return v;
+    };
+
+    inline std::vector<string> getPlotsID(const string& type, const int& level, const bool& isOccupied){
+
+        return this->getPlotsID(level, type, isOccupied);
+    };
+
+
+    Plot getPlot(const string& id){
+        if(this->_plotsList[id] == "undefined"){
+
+            return Plot();
+        }
+        return Plot(this->_plotsList[id]);
+    };
+
+
+
+    Plot getPlotByCar(const string& licenseNum){
+
+        if(this->_carsList[licenseNum] == "undefined"){
+
+            return Plot();
+        }
+
+        return Plot(this->_plotsList[this->_simpleGet(this->_carsList[licenseNum], "plot")]);
+    };
+
+
+
+    Plot getPlotByCar(Car& car){
+
+        if(this->_carsList[car.getID()] == "undefined"){
+
+            return Plot();
+        }
+
+        return Plot(this->_plotsList[this->_simpleGet(this->_carsList[car.getID()], "plot")]);
+    };
+
+
+    bool newCar(const string& licenseNum, const string& type, const string& plotID){
+        string s;
+        return this->newCar(licenseNum, type, plotID, s);
+    }
+    bool newCar(const string& licenseNum, const string& type, const string& plotID, string& msg){
+
+        if(licenseNum.length() < 1){
+
+            msg += "Car " + licenseNum + " LicenseNum Illegal!!!";
+            return false;
+        }
+
+        if(this->_carsList.isExist(licenseNum)){
+
+            msg += "Car " + licenseNum + " Already in the Park!!";
+            return false;
+        }
+
+        if(this->isGoodType(type)){
+
+            msg += "Car " + licenseNum + " Wrong Type!!!";
+            return false;
+        }
+
+        if(this->_plotsList[plotID] == "undefined"){
+
+            msg += "Car " + licenseNum + " Assigned Plot Not Exist!!!";
+            return false;
+        }
+
+        Car c(licenseNum, type, plotID);
+
+        this->_carsList[licenseNum] = c.getDataStr();
+        this->_plotsList[plotID] = this->_simpleUpdate(this->_plotsList[plotID], "car", licenseNum);
+
+        return true;
+    };
+
+    bool delCar(const string& licenseNum){
+
+        string s;
+        return this->delCar(licenseNum, s);
+    }
+
+    bool delCar(const string& licenseNum, string& msg){
+
+        if(!this->_carsList.isExist(licenseNum)){
+
+            msg += "Car " + licenseNum + " Not In Plot!!!";
+            return false;
+        }
+
+        Car c(this->_carsList[licenseNum]);
+
+        this->_plotsList[c.getPlot()] = this->_simpleUpdate(this->_plotsList[c.getPlot()], "car", "null");
+        this->_carsList.clear(licenseNum);
+        return true;
+    }
+
+
+
+    std::vector<string> getCarsID(){
+
+        if(!this->_threadFinished) this->_t->join();
+        std::vector<string> v;
+        this->_carsList.forEach([&](string first, string second){
+            v.push_back(first);
+        });
+
+        return v;
+    };
+
+
+    std::vector<string> getCarsID(const int& level){
+
+        std::vector<string> v;
+
+        v = this->getPlotsID(level, true);
+
+        for(string& i : v){
+
+            i = this->_simpleGet(this->_plotsList[i], "car");
+        }
+
+        return v;
+    };
+
+    std::vector<string> getCarsID(const string& type){
+
+        std::vector<string> v;
+
+        v = this->getPlotsID(type, true);
+
+        for(string& i : v){
+
+            i = this->_simpleGet(this->_plotsList[i], "car");
+        }
+
+        return v;
+    };
+
+    std::vector<string> getCarsID(const int& level, const string& type){
+
+        std::vector<string> v;
+
+        v = this->getPlotsID(level, type, true);
+
+        for(string& i : v){
+
+            i = this->_simpleGet(this->_plotsList[i], "car");
+        }
+
+        return v;
+    };
+
+
+    Car getCar(const string& licenseNum){
+
+        if(this->_carsList[licenseNum] == "undefined"){
+
+            return Car();
+        }
+
+        return Car(this->_carsList[licenseNum]);
+    }
+
+
+    Car getCarByPlot(string& id){
+
+        if(this->_carsList[id] == "undefined"){
+
+            return Car();
+        }
+
+        Plot p = this->getPlot(id);
+
+        return Car(this->_carsList[p.getCar()]);
+    }
+
+
+    inline Car getCarByPlot(Plot& p){
+
+        if(this->_carsList[p.getCar()] == "undefined"){
+
+            return Car();
+        }
+
+        return Car(this->_carsList[p.getCar()]);
+    }
+
+
+
+    bool updatePlot(Plot& plot, const int& level){
+
+        if(level < 0 || level > this->_levels){
+            return false;
+        }
+
+        this->_plotsList[plot.getID()] = this->_simpleUpdate(this->_plotsList[plot.getID()], 
+            "level", to_string(level)); 
+
+        plot.updateLevel(level);
+
+        return true;
+    }
+
+    bool updatePlot(Plot& plot, const string& type){
+
+        if(!this->isGoodType(type)){
+
+            return false;
+        }
+
+        this->_plotsList[plot.getID()] = this->_simpleUpdate(this->_plotsList[plot.getID()], 
+            "type", type); 
+
+        plot.updateType(type);
+
+        return true;
+    }
+
+
+    bool checkIn(const string& licenseNum, const string& type){
+        string msg;
+        return checkIn(licenseNum, type, msg);
+    }
+
+    bool checkIn(const string& licenseNum, const string& type, string& msg){
+
+
+        std::vector<string> v = this->getPlotsID(type, false);
+
+        if(!v.size()){
+            msg += type + " has no more Plots!!";
+            return false;
+        }
+
+        if(!newCar(licenseNum, type, v[0], msg)) return false;
+
+        return true;
+    }
+
+    bool checkIn(const string& licenseNum, const string& type, const int& level){
+
+        string msg;
+        return checkIn(licenseNum, type, level, msg);
+    }
+    bool checkIn(const string& licenseNum, const string& type, const int& level, string& msg){
+
+
+        std::vector<string> v = this->getPlotsID(level, type, false);
+
+        if(!v.size()){
+            msg += type + " on Level " + to_string(level) + " has no more Plots!!";
+            return false;
+        }
+
+        if(!newCar(licenseNum, type, v[0], msg)) return false;
+
+        return true;
+    }
+
+    bool checkInByPlotID(const string& licenseNum, const string& type, const string& plotID){
+
+        string msg;
+        return checkInByPlotID(licenseNum, type, plotID, msg);
+    }
+    bool checkInByPlotID(const string& licenseNum, const string& type, const string& plotID, string& msg){
+
+        if(!newCar(licenseNum, type, plotID, msg)) return false;
+        return true;
+    }
+
+    int checkOut(const string& licenseNum){
+
+        if(!this->_carsList.isExist(licenseNum)) return -1;
+        this->_carsList[licenseNum] = this->_simpleUpdate(this->_carsList[licenseNum], "LastOutTime", to_string(time(NULL)));
+        
+        Car c(this->_carsList[licenseNum]);
+
+        this->delCar(licenseNum);
+
+        return this->_feeTable.getFee(c.getType(), c.getLastInTime(), c.getLastOutTime());
+    }
+
+
 
 //private:
     ovo::data _d, _carsList, _plotsList;
+    ovo::index _isOccupiedIndex, _typeIndex, _levelIndex;
     std::vector<string> _types;
     unsigned int _levels;
     ovo::math m;
@@ -276,11 +657,11 @@ public:
     ovo::db db;
     std::thread *_t;
     bool _threadFinished;
+    FeeTable _feeTable;
 
     void _getTypes(std::vector<std::map<string, int>>& v){
 
         this->_types.clear(); //清空vec
-
         for(auto i : v){
             for(auto ii : i){
                 if(find(this->_types.begin(), this->_types.end(), ii.first) == this->_types.end()){
@@ -293,7 +674,6 @@ public:
 
     void _setupPlots(std::vector<std::map<string, int>>& v){
 
-        int t = time(NULL);
         for(unsigned int i = 0; i < v.size(); i ++){
 
             for(auto ii : v[i]){
@@ -301,17 +681,61 @@ public:
                 for(int iii = 0; iii < ii.second; iii ++){
                     string s = m.randStr();
                     this->_plotsList[s] = this->_simplePlot(s, i, ii.first);
+                    //cout << _simpleGet(_plotsList[s], "type") << endl;
                 }
             }
         }
 
-        cout << "Used" << time(NULL) - t;
     };
 
     string _simplePlot(const string& id, const int& level, const string& type){
 
         return "__OVO_DATA__id$$||$$" + id + "$$||$$level$$||$$" + to_string(level) + "$$||$$type$$||$$"
-        + type + "$$||$$car$$||$$null$$||$$LastOperateTime$$||$$null$$||$$CreatedTime$$||$$null$$||$$";
+        + type + "$$||$$car$$||$$null$$||$$LastOperateTime$$||$$" + to_string(time(NULL)) + "$$||$$CreatedTime$$||$$" + to_string(time(NULL)) + "$$||$$";
+    }
+
+    string _simpleGet(const string& s, const string& what){
+
+        std::vector<string> v;
+        S.split(s, v, "$$||$$");
+
+        vector <string>::iterator it = find(v.begin(), v.end(), what);
+        if(it != v.end()) return v[distance(v.begin(), it) + 1];
+        return string();
+    }
+
+    string _simpleUpdate(const string& s, const string& what, const string& to){
+
+        std::vector<string> v;
+        S.split(s, v, "$$||$$");
+
+        vector <string>::iterator it = find(v.begin(), v.end(), what);
+        if(it == v.end()) return s;
+
+        v[distance(v.begin(), it) + 1] = to;
+
+        it = find(v.begin(), v.end(), "LastOperateTime");
+        if(it != v.end()) v[distance(v.begin(), it) + 1] = to_string(time(NULL));
+
+        string ss = "";
+        for(string i : v){
+            ss += i + "$$||$$";
+        }
+
+        return ss;
+    }
+
+    void _updateIndex(){
+
+    };
+
+    void _recoverTypes(){
+
+        S.split(this->_d["types"], this->_types, "|||$$|||");
+    }
+
+    bool isGoodType(const string& type){
+        return (bool)(find(this->_types.begin(), this->_types.end(), type) == this->_types.end());
     }
 
 };
