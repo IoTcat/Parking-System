@@ -10,8 +10,8 @@ using namespace std;
 
 int main(int argc, char const *argv[]) {
     Park p;
-
-    if (!p.isExist()) {
+    int t = time(NULL);
+    if (!p.isExist()) {cout << "exist";
         ovo::math m;
         std::vector<std::map<string, int>> ParkIniInfo;
         std::map<string, int> t_map;
@@ -53,12 +53,19 @@ int main(int argc, char const *argv[]) {
         feeTable["Ship"] = fee;
 
         p.updateFeeTable(feeTable);
+        //p._storeData();
     }
 
-    ovo::data d;
-    d["date"] = "2019-05-24";
+    p.join();
+    cout << p._d.showAll();
+    cout << "Cost" << time(NULL) - t;
+    p.checkIn("2222", "Ship");
+    p.checkOut("2222");
 
-    cout << p.getLog(d)[0].showAll();
+    //ovo::data d;
+    //d["date"] = "2019-05-24";
+
+    //cout << p.getLog(d)[0].showAll();
     // cout << p.getLog()
 
     while (1) {

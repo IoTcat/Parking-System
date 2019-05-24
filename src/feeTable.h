@@ -40,6 +40,8 @@ class FeeTable {
         return std::vector<int>();
     };
 
+    friend class Park;
+
    private:
     ovo::data _d, _tableData;
     ovo::db db;

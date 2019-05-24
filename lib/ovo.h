@@ -221,7 +221,7 @@ namespace ovo{
 
             /*** AES ***/
         public:
-            aes_ini(std::string key, std::string iv = ""){
+            void aes_ini(std::string key, std::string iv = ""){
                 key = (this->md5(key)).substr(0, 16);
                 _aes_key = key;
                 if(iv == "") this->_aes_iv = this->_aes_key;

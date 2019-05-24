@@ -13,6 +13,7 @@ Park::Park() {
     this->_threadPointer = false;
 
     this->_d = db.getData(g_ParkID);
+    cout << _d.showAll();
     if (!this->isExist()) return;
 
     this->_threadFinished = false;
@@ -29,14 +30,7 @@ Park::Park() {
 };
 
 Park::~Park() {
-    if (!this->_threadFinished) this->_t->join();
-
-    this->_d.classify();
-    this->_plotsList.classify();
-    this->_carsList.classify();
-    db.pushData(g_ParkID, this->_d);
-    db.pushData(this->_d["plotsList"], this->_plotsList);
-    db.pushData(this->_d["carsList"], this->_carsList);
+    this->_storeData();
 };
 
 void Park::join() {
@@ -87,6 +81,8 @@ void Park::ini(std::vector<std::map<string, int>>& v) {
     vv.push_back("date");
 
     db.createTable(this->_d["log"], vv);
+
+    this->_storeData();
 };
 
 const vector<string> Park::getPlotsID() {
@@ -249,6 +245,8 @@ const bool Park::newCar(const string& licenseNum, const string& type,
     this->_plotsList[plotID] =
         this->_simpleUpdate(this->_plotsList[plotID], "car", licenseNum);
 
+    this->_storeData();
+
     return true;
 };
 
@@ -265,6 +263,9 @@ const bool Park::delCar(const string& licenseNum, string& msg) {
     this->_plotsList[c.getPlot()] =
         this->_simpleUpdate(this->_plotsList[c.getPlot()], "car", "null");
     this->_carsList.clear(licenseNum);
+
+    this->_storeData();
+
     return true;
 }
 
@@ -332,6 +333,8 @@ const bool Park::updatePlot(Plot& plot, const int& level) {
 
     plot.updateLevel(level);
 
+    this->_storeData();
+
     return true;
 }
 
@@ -346,6 +349,8 @@ const bool Park::updatePlot(Plot& plot, const string& type) {
         this->_simpleUpdate(this->_plotsList[plot.getID()], "type", type);
 
     plot.updateType(type);
+
+    this->_storeData();
 
     return true;
 }
@@ -423,10 +428,36 @@ int Park::checkOut(const string& licenseNum) {
 
     this->delCar(licenseNum);
 
+    
+
     // this->_threadFinished = true;
     //});
 
     return fee;
+}
+
+
+void Park::_storeData(){
+
+    if (!this->_threadFinished) this->_t->join();
+
+     this->_threadFinished = false;
+
+     this->_t = new std::thread([&]{
+
+        this->_threadPointer = true;
+        this->_needStoreData = false;
+
+        this->_d.classify();
+        this->_plotsList.classify();
+        this->_carsList.classify();
+        db.pushData(g_ParkID, this->_d);
+        db.pushData(this->_d["plotsList"], this->_plotsList);
+        db.pushData(this->_d["carsList"], this->_carsList);
+
+        this->_threadFinished = true;
+
+    });
 }
 
 void Park::_getTypes(std::vector<std::map<string, int>>& v) {
