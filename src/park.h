@@ -695,6 +695,27 @@ public:
     }
 
 
+    std::vector<std::map<string, string>> getLog(std::map<string, string> Filter){
+
+        ovo::data d;
+        std::vector<ovo::data> v;
+        std::vector<std::map<string, string>> o;
+        for(auto i : Filter){
+            d[i.first] = d[i.second];
+        }
+
+        v = db.getSQL(this->_d["log"], d);
+
+        for(auto i : v){
+
+            o.push_back(i._data);
+        }
+
+        return o;
+    }
+
+
+
     std::vector<ovo::data> getLog(ovo::data FilterData){
 
         return db.getSQL(this->_d["log"], FilterData);
@@ -720,10 +741,26 @@ public:
         return db.getSQL(this->_d["log"], d);
     }
 
+    std::vector<ovo::data> getLogByType(const string& type, const string& date){
+
+        ovo::data d;
+        d["type"] = type;
+        d["date"] = date;
+        return db.getSQL(this->_d["log"], d);
+    }
+
     std::vector<ovo::data> getLogByLevel(const int& level){
 
         ovo::data d;
         d["level"] = to_string(level);
+        return db.getSQL(this->_d["log"], d);
+    }
+
+    std::vector<ovo::data> getLogByLevel(const int& level, const string& date){
+
+        ovo::data d;
+        d["level"] = to_string(level);
+        d["date"] = date;
         return db.getSQL(this->_d["log"], d);
     }
 

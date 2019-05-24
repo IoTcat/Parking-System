@@ -469,8 +469,9 @@ namespace ovo{
                 return _data.size();
             }
 
-        private:
             map<string, string> _data;
+        private:
+            
             ovo::String S;
             /* string to string */
             inline string toStr(const string& from) const{
@@ -728,6 +729,9 @@ namespace ovo{
                 ovo::data indexList;
                 std::vector<std::vector<string>> v;
                 std::vector<ovo::data> o;
+
+                d.classify();
+                if(!d.size()) return this->getSQL(tableName);
 
                 indexList = this->_getTableIndex(tableName);
 
