@@ -18,6 +18,10 @@
 > 请传入一个map的vector。map的键名为停车位种类，键值为个数。vector顺序代表层数，从0层开始。
 + `void updateFeeTable(std::map<string, std::vector<int>>& m)`: 更新费用计算方法。map的键名是种类type, 键值是这个type的计费方式，用vector表示。注意vector从0开始，顺序对应小时，最大为24小时。对应的值是这一小时的计费。**首次运行时，本函数必须在ini()之后调用**。
 
+
+### 获取Park信息函数
++ `const int getMaxLevel()`: 获取Park层数
+
 ### 获取车位函数
 + `const std::vector<string> getPlotsID()`: 获取全部车位ID
 + `const std::vector<string> getPlotsID(const bool isOccupied)`: 获取全部占有/未占有车位ID
@@ -54,6 +58,7 @@
 
 ### 读取日志
 > 当车checkOut时，记录会被自动记入日志  
+> 提取日志前请**务必**确认有日志存在  
 > 日志返回数据使用ovo::data类型，类似map<string, string>。详见[这里](https://github.com/eeeneko/ovo/tree/master/docs/ovo_data)
 + `std::vector<ovo::data> getLog()`: 获取**全部记录**
 + `std::vector<ovo::data> getLogByDate(const string& date)`: 根据**日期**获取记录，格式`2019-05-24`
