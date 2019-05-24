@@ -43,13 +43,26 @@
 + `Car getCarByPlot(const Plot& plot)`: 根据plot对象获取车对象
 
 ### 功能函数
-+ `bool checkIn(const string& licenseNum, const string& type)`: 本函数适用于车进入停车场时登记。成功返回true，失败(车位已满)返回false。
-+ `bool checkIn(const string& licenseNum, const string& type, const int& level)`: 指定层数登记。成功返回true，失败返回false。
-+ `int checkOut(const string& licenseNum)`: 车出停车场时结算，输出整数金额。
++ `bool checkIn(const string& licenseNum, const string& type, string& errMsg)`: 本函数适用于车进入停车场时登记。成功返回true，失败(车位已满)返回false。失败信息将追加到errMsg中。所有errMsg参数均可不填。
++ `bool checkIn(const string& licenseNum, const string& type, const int& level, string& errMsg)`: 指定层数登记。成功返回true，失败返回false。错误信息追加到errMsg。
++ `bool checkInByPlotID(const string& licenseNum, const string& type, const string& plotID, string& errMsg)`: 指定plotID登记，失败信息追加errMsg。
++ `int checkOut(const string& licenseNum)`: 车出停车场时结算，输出整数金额。异常则返回-1。
 
 ### 更改设置函数
 + `void updatePlot(const Plot& plot, const int& level)`: 更改plot的level
 + `void updatePlot(const Plot& plot, const string& type)`: 更改plot的种类
+
+### 读取日志
+> 当车checkOut时，记录会被自动记入日志  
+> 日志返回数据使用ovo::data类型，类似map<string, string>。详见[这里](https://github.com/eeeneko/ovo/tree/master/docs/ovo_data)
++ `std::vector<ovo::data> getLog()`: 获取全部记录
++ `std::vector<ovo::data> getLogByDate(const string& date)`: 根据日期获取记录，格式`2019-05-24`
++ `std::vector<ovo::data> getLogByCarID(const string& licenseNum)`: 根据车牌号获取记录
++ `std::vector<ovo::data> getLogByType(const string& type)`: 根据车类型获取记录
++ `std::vector<ovo::data> getLogByLevel(const int& level)`: 根据层数获取记录
++ `std::vector<ovo::data> getLogByfee(const int& fee)`: 根据计费获取记录
++ `std::vector<ovo::data> getLogByType(const string& type, const string& date)`: 根据车类型和日期获取记录
++ `std::vector<ovo::data> getLogByLevel(const int& level, const string& date)`: 根据层数和日期获取记录
 
 ## Car
 
@@ -59,6 +72,9 @@
 + `string getType()`: 获取种类
 + `string getPlot()`: 获取车位编号
 + `string getID()`: 获取车牌号
++ `string getLastInTime()`: 获取出场时间戳
++ `string getLastOutTime()`: 获取出场时间戳
++ `string showAll()`: JSON格式打印car的所有数据
 
 
 ## Plot
@@ -70,14 +86,12 @@
 + `string getType()`: 获取车位种类
 + `int getLevel()`: 获取车位所在层数
 + `string getCar()`: 获取车牌号
++ `string showAll()`: JSON格式打印plot的所有数据
 
 
-## 日志功能
-
-- 待定
 
 ## 时间安排
-- 周五下午提供完整代码。
+- 周五下午5点提供完整代码。
 
 
 
