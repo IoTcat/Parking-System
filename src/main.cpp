@@ -1,23 +1,21 @@
-#include <iostream>
-#include <vector>
-#include <map>
 #include <ctime>
+#include <iostream>
+#include <map>
+#include <vector>
 #include "park.h"
 
 #include "../lib/ovo.h"
 
 using namespace std;
 
-int main(int argc, char const *argv[])
-{
-
+int main(int argc, char const *argv[]) {
     Park p;
 
-    if(!p.isExist()){
+    if (!p.isExist()) {
         ovo::math m;
         std::vector<std::map<string, int>> ParkIniInfo;
         std::map<string, int> t_map;
-        for(int i = 0; i < 100; i ++){
+        for (int i = 0; i < 100; i++) {
             t_map["Car"] = m.rand(0, 600);
             t_map["Bicycle"] = m.rand(0, 600);
             t_map["Airplane"] = m.rand(0, 600);
@@ -30,25 +28,25 @@ int main(int argc, char const *argv[])
         std::map<string, std::vector<int>> feeTable;
         std::vector<int> fee;
 
-        for(int i = 0; i < 24; i ++){
+        for (int i = 0; i < 24; i++) {
             fee.push_back(m.rand(0, 60));
         }
 
         feeTable["Car"] = fee;
 
-        for(int i = 0; i < 24; i ++){
+        for (int i = 0; i < 24; i++) {
             fee[i] = m.rand(0, 60);
         }
 
         feeTable["Bicycle"] = fee;
 
-        for(int i = 0; i < 24; i ++){
+        for (int i = 0; i < 24; i++) {
             fee[i] = m.rand(0, 60);
         }
 
         feeTable["Airplane"] = fee;
 
-        for(int i = 0; i < 24; i ++){
+        for (int i = 0; i < 24; i++) {
             fee[i] = m.rand(0, 60);
         }
 
@@ -57,49 +55,40 @@ int main(int argc, char const *argv[])
         p.updateFeeTable(feeTable);
     }
 
+    ovo::data d;
+    d["date"] = "2019-05-24";
 
-ovo::data d;
-d["date"] = "2019-05-24";
+    cout << p.getLog(d)[0].showAll();
+    // cout << p.getLog()
 
-cout <<p.getLog(d).size();
-//cout << p.getLog()
-
-
-    while(1){
-
+    while (1) {
         string input = "";
 
-        while(cin >> input){
-
-            if(input == "getPlots"){
-
-                for(auto i : p.getPlotsID()){
-                    cout << p.getPlot(i).showAll() << endl; 
+        while (cin >> input) {
+            if (input == "getPlots") {
+                for (auto i : p.getPlotsID()) {
+                    cout << p.getPlot(i).showAll() << endl;
                 }
             }
 
-            if(input == "getPlotsNum"){
-
-                    cout << p.getPlotsID().size() << endl;
+            if (input == "getPlotsNum") {
+                cout << p.getPlotsID().size() << endl;
             }
 
             input = "";
         }
     }
 
+    // FeeTable t;
+    /*
+        std::vector<string> v;
 
-    
-
-   // FeeTable t;
-/*
-    std::vector<string> v;
-
-    v.push_back("Cars");
-    v.push_back("rac");
+        v.push_back("Cars");
+        v.push_back("rac");
 
 
-    t.setTypes(v);
-*//*
+        t.setTypes(v);
+    *//*
 
     std::map<string, std::vector<int>> mm;
 
@@ -120,74 +109,76 @@ cout <<p.getLog(d).size();
     //cout << t.showAll();
 */
 
-/*
-    Plot p("eeeee", 3, "222");
+    /*
+        Plot p("eeeee", 3, "222");
 
-    ovo::data d;
+        ovo::data d;
 
-    d["eeeee"] = p.getStrContent();
+        d["eeeee"] = p.getStrContent();
 
-    cout << d.showAll();
-*/
+        cout << d.showAll();
+    */
 
+    /*
+       
 
-/*
-   
-    Park p;
+        Park p;
 
-    //cout << p.isExist();
+        //cout << p.isExist();
 
-    std::vector<map<string, int>> v;
+        std::vector<map<string, int>> v;
 
-    map<string, int> m;
+        map<string, int> m;
 
-    m["Bycycle"] = 599;
-    m["Cars"] = 2;
+        m["Bycycle"] = 599;
+        m["Cars"] = 2;
 
-    v.push_back(m);
+        v.push_back(m);
 
-    m["Carsss"] = 99;
-    v.push_back(m);
+        m["Carsss"] = 99;
+        v.push_back(m);
 
-    p.ini(v);
-    //p.updateFeeTable(mm);
+        p.ini(v);
+        //p.updateFeeTable(mm);
 
-    //cout << p.checkType("Cadrs");
-    
-
-
-    p.join();
+        //cout << p.checkType("Cadrs");
+        
 
 
-    p.checkIn("2333", "Cars");
-    cout << p.checkOut("2333");
-    //cout << p._feeTable.showAll();
 
-    //cout << p._d.showAll();
-    //*/
-/*
-    string kk = "";
-    if(!p.newCar("110", "Cars", p.getPlotsID("Cars", false)[0], kk))cout << kk;
+        p.join();
 
-    int t = time(NULL);
-    string s = "Cars";
-    //cout << endl<<p.getPlotsID("Cars", false).size();
 
-    for(auto i : p.getPlotsID(s)){
-        cout << p.getPlot(i).showAll();
-    }/*
+        p.checkIn("2333", "Cars");
+        cout << p.checkOut("2333");
+        //cout << p._feeTable.showAll();
 
-    for(auto i : p.getCarsID(0)){
-        cout << i;
-    }
-    cout << "  " << time(NULL) - t;
-//p.delCar("110");
-    cout << p.getPlotByCar("110").showAll();
+        //cout << p._d.showAll();
+        //*/
+    /*
+        string kk = "";
+        if(!p.newCar("110", "Cars", p.getPlotsID("Cars", false)[0], kk))cout <<
+    kk;
 
-        for(auto i : p.getLogByDate("2019-05-23")){
-            cout << i.showAll();
+        int t = time(NULL);
+        string s = "Cars";
+        //cout << endl<<p.getPlotsID("Cars", false).size();
+
+        for(auto i : p.getPlotsID(s)){
+            cout << p.getPlot(i).showAll();
+        }/*
+
+        for(auto i : p.getCarsID(0)){
+            cout << i;
         }
-*/
+        cout << "  " << time(NULL) - t;
+    //p.delCar("110");
+        cout << p.getPlotByCar("110").showAll();
+
+            for(auto i : p.getLogByDate("2019-05-23")){
+                cout << i.showAll();
+            }
+    */
 
     return 0;
 }

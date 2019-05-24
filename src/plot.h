@@ -1,102 +1,61 @@
+/*
+ * @Author: IoTcat (https://iotcat.me) 
+ * @Date: 2019-05-24 17:01:11 
+ * @Last Modified by:   IoTcat 
+ * @Last Modified time: 2019-05-24 17:01:11 
+ */
 
 
 #ifndef __PLOT_H__
 #define __PLOT_H__
 
-#include <iostream>
-#include <vector>
-#include <string>
-#include <ctime>
-#include <cstdlib>
 #include <cmath>
+#include <cstdlib>
+#include <ctime>
+#include <iostream>
+#include <string>
+#include <vector>
 #include "../lib/ovo.h"
 
 using namespace std;
 
-class Plot{
+class Plot {
+   public:
+    Plot(const string& id, const unsigned int& level, const string& type);
+    Plot(const string& plot);
+    Plot() { this->_isExist = false; };
+    ~Plot(){};
 
-public:
-    Plot(const string& id, const unsigned int& level, const string& type){
-        this->_d["id"] = id;
-        this->_d["level"] = to_string(level);
-        this->_d["type"] = type;
-        this->_d["car"] = "null";
-        this->_d["LastOperateTime"] = to_string(time(NULL));
-        this->_d["CreatedTime"] = to_string(time(NULL));
-        this->_isExist = true;
-    };
+    inline const bool isExist() const { return this->_isExist; };
 
-    Plot(const string& s){
-        this->_isExist = false;
-        if(s == "undefined"){
-            return;
-        }
-        this->_d = this->_d.strToData(s);
-        if(this->_d["id"] == "undefined"){
-            return;
-        }
-        this->_isExist = true;
-    };
+    inline const string getID() { return this->_d["id"]; };
 
-    Plot(){
+    inline const int getLevel() { return atoi(this->_d["level"].c_str()); };
 
-        this->_isExist = false;
-    };
-    
-    ~Plot(){
+    inline const string getType() { return this->_d["type"]; };
 
-    };
+    inline const string getCar() { return this->_d["car"]; };
 
-    inline isExist(){
-        return this->_isExist;
-    };
-
-    inline string getID(){
-        return this->_d["id"];
-    };
-
-    inline int getLevel(){
-        return atoi(this->_d["level"].c_str());
-    };
-
-    inline string getType(){
-        return this->_d["type"];
-    };
-
-    inline string getCar(){
-        return this->_d["car"];
-    };
-
-    inline bool isOccupied(){
+    inline const bool isOccupied() {
         return (this->_d["car"] == "null") ? false : true;
     };
 
-
-
-    inline string showAll(){
-        return this->_d.showAll();
-    };
+    inline const string showAll() { return this->_d.showAll(); };
 
     friend class Park;
 
-//private:
+   private:
     ovo::data _d;
     bool _isExist;
-    string getStrContent(){
-
+    inline const string getStrContent() {
         return this->_d.dataToStr(this->_d);
     };
 
-    inline void updateLevel(const unsigned int& level){
+    inline void updateLevel(const unsigned int& level) {
         this->_d["level"] = to_string(level);
     };
 
-    inline void updateType(const string& type){
-        this->_d["type"] = type;
-    };
-
-
+    inline void updateType(const string& type) { this->_d["type"] = type; };
 };
 
-
-#endif //__PLOT_H__
+#endif  //__PLOT_H__
