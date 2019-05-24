@@ -25,6 +25,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <algorithm>
+#include <functional>
 
 #ifdef _pthread
 
@@ -442,7 +443,7 @@ namespace ovo{
             };
 
             /* for each */
-            void forEach(auto f){
+            void forEach(const std::function<void(string, string)>& f){
                 map<string, string>::iterator t_iter = this->_data.begin();
                 while(t_iter != this->_data.end()){
                     f(t_iter->first, t_iter->second);
