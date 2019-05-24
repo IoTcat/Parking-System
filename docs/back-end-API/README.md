@@ -58,6 +58,7 @@
 
 ### 读取日志
 > 当车checkOut时，记录会被自动记入日志  
+> 提取日志前请**务必**确认有日志存在
 > 日志返回数据使用ovo::data类型，类似map<string, string>。详见[这里](https://github.com/eeeneko/ovo/tree/master/docs/ovo_data)
 + `std::vector<ovo::data> getLog()`: 获取**全部记录**
 + `std::vector<ovo::data> getLogByDate(const string& date)`: 根据**日期**获取记录，格式`2019-05-24`
