@@ -57,13 +57,22 @@ int main(int argc, char const *argv[]) {
     }
 
     p.join();
-    cout << p._d.showAll();
     cout << "Cost" << time(NULL) - t;
-    p.checkIn("2222", "Ship");
-    p.checkOut("2222");
+    string msg = "";
+    //if(!p.checkIn("2222", "Ship", msg)) cout << "4444";
+    for(auto i : p.getCarsID()){
 
-    //ovo::data d;
-    //d["date"] = "2019-05-24";
+        cout << i;
+    }
+
+    //cout << p.checkOut("2222");
+
+    ovo::data d;
+    d["date"] = "2019-05-24";
+
+    for(auto i : p.getLog(d)){
+        cout << i.showAll();
+    }
 
     //cout << p.getLog(d)[0].showAll();
     // cout << p.getLog()

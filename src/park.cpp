@@ -13,7 +13,7 @@ Park::Park() {
     this->_threadPointer = false;
 
     this->_d = db.getData(g_ParkID);
-    cout << _d.showAll();
+
     if (!this->isExist()) return;
 
     this->_threadFinished = false;
@@ -428,7 +428,7 @@ int Park::checkOut(const string& licenseNum) {
 
     this->delCar(licenseNum);
 
-    
+    this->_storeData();
 
     // this->_threadFinished = true;
     //});

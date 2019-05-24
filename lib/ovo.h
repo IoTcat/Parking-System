@@ -710,6 +710,9 @@ namespace ovo{
                 std::vector<ovo::data> o;
 
                 indexList = this->_getTableIndex(tableName);
+                if(indexList["_isExist"] == "NO"){
+                    return o;
+                }
                 if(indexList["__TABLE_INDEX__" + index] == "undefined"){
                     return o;
                 }
@@ -734,7 +737,9 @@ namespace ovo{
                 if(!d.size()) return this->getSQL(tableName);
 
                 indexList = this->_getTableIndex(tableName);
-
+                if(indexList["_isExist"] == "NO"){
+                    return o;
+                }
 
                 d.forEach([&](string index, string val){
 
@@ -753,6 +758,9 @@ namespace ovo{
                 std::vector<ovo::data> o;
 
                 indexList = this->getData(this->_getTableList(tableName));
+                if(indexList["_isExist"] == "NO"){
+                    return o;
+                }
 
 
                 for(auto i : indexList){
@@ -768,6 +776,9 @@ namespace ovo{
                 std::vector<string> v;
 
                 indexList = this->_getTableIndex(tableName);
+                if(indexList["_isExist"] == "NO"){
+                    return 0;
+                }
                 if(indexList["__TABLE_INDEX__" + index] == "undefined"){
                     return 0;
                 }
@@ -891,6 +902,9 @@ namespace ovo{
                 ovo::data d, o;
 
                 d = this->getData(generateTableName(tableName));
+
+                if(d["_isExist"] == "NO") return d;
+
                 std::vector<string> v;
 
                 S.split(d["__OVO_INDEX__"], v, "||$$||");

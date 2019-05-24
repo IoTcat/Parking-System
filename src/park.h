@@ -82,7 +82,6 @@ class Park {
 
     inline void updateFeeTable(std::map<string, std::vector<int>>& m) {
         this->_feeTable.set(m);
-        this->_feeTable._pushTable();
     };
 
     inline const std::vector<string> getPlotsID(const string& type,
@@ -211,7 +210,7 @@ class Park {
         return db.getSQL(this->_d["log"], d);
     };
 
-   //private:
+private:
     ovo::data _d, _carsList, _plotsList;
     // ovo::index _isOccupiedIndex, _typeIndex, _levelIndex;
     std::vector<string> _types;

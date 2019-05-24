@@ -19,10 +19,8 @@ FeeTable::FeeTable() {
 };
 
 FeeTable::~FeeTable() {
-    this->_d.classify();
-    db.pushData(g_feeTableID, this->_d);
+
     this->_pushTable();
-    db.pushData(g_feeTableID + "_Table", this->_tableData);
 };
 
 void FeeTable::setTypes(std::vector<string>& v) {
@@ -34,6 +32,8 @@ void FeeTable::setTypes(std::vector<string>& v) {
     for (auto i : v) {
         this->_table[i] = vv;
     }
+
+    this->_pushTable();
 }
 
 void FeeTable::set(std::map<string, std::vector<int>>& m) {
@@ -44,6 +44,8 @@ void FeeTable::set(std::map<string, std::vector<int>>& m) {
             this->_table[i.first] = this->_classify(i.second);
         }
     }
+
+    this->_pushTable();
 }
 
 int const FeeTable::getFee(const string& type, const string& LastInTime,
@@ -137,4 +139,8 @@ void FeeTable::_pushTable() {
     for (auto i : this->_table) {
         this->_tableData[i.first] = this->_vecToStr(i.second);
     }
+
+    this->_d.classify();
+    db.pushData(g_feeTableID, this->_d);
+    db.pushData(g_feeTableID + "_Table", this->_tableData);
 }
