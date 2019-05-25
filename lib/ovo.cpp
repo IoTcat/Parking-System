@@ -1984,12 +1984,12 @@ void ovo::db::pushData(const string& key, data& data){
     string fName = getFName(key);
 
     ofstream ous(fName.c_str());
-    data.iter=data.begin();
-    for(;data.iter!=data.end();data.iter++){
+
+    for(auto i : data._data){
         if(_AES){
-            ous << "_" << m.aes_encode(data.iter->first)<<" _"<<m.aes_encode(data.iter->second)<<endl;
+            ous << "_" << m.aes_encode(i.first)<<" _"<<m.aes_encode(i.second)<<endl;
         }else{
-            ous << "_" << m.base64_encode(data.iter->first)<<" _"<<m.base64_encode(data.iter->second)<<endl;
+            ous << "_" << m.base64_encode(i.first)<<" _"<<m.base64_encode(i.second)<<endl;
         }
     }
     ous.close();
@@ -2013,12 +2013,12 @@ void ovo::db::addData(const string& key, data& data){
     string fName = getFName(key);
 
     ofstream ous(fName.c_str(), ios::app);
-    data.iter=data.begin();
-    for(;data.iter!=data.end();data.iter++){
+    
+    for(auto i : data._data){
         if(_AES){
-            ous << "_" << m.aes_encode(data.iter->first)<<" _"<<m.aes_encode(data.iter->second)<<endl;
+            ous << "_" << m.aes_encode(i.first)<<" _"<<m.aes_encode(i.second)<<endl;
         }else{
-            ous << "_" << m.base64_encode(data.iter->first)<<" _"<<m.base64_encode(data.iter->second)<<endl;
+            ous << "_" << m.base64_encode(i.first)<<" _"<<m.base64_encode(i.second)<<endl;
         }
     }
     ous.close();
