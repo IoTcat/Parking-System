@@ -937,7 +937,7 @@ namespace ovo{
             string _path;
             bool _AES;
             /* generate file name */
-            inline string getFName(string key){
+            inline string getFName(const string& key){
                 return this->_path + m.md5(key + "_ovo_db") + ".ovo_db";
             }
             /* check folder */
