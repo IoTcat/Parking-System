@@ -88,6 +88,7 @@ void Park::ini(std::vector<std::map<string, int>>& v) {
 const vector<string> Park::getPlotsID() {
     if (!this->_threadFinished) this->_t->join();
     std::vector<string> v;
+    this->_plotsList.classify();
     this->_plotsList.forEach(
         [&](string first, string second) { v.push_back(first); });
 
@@ -97,6 +98,7 @@ const vector<string> Park::getPlotsID() {
 const std::vector<string> Park::getPlotsID(const bool& isOccupied) {
     if (!this->_threadFinished) this->_t->join();
     std::vector<string> v;
+    this->_plotsList.classify();
     this->_plotsList.forEach([&](string first, string second) {
         if (isOccupied && this->_simpleGet(second, "car") != "null")
             v.push_back(first);
@@ -109,6 +111,7 @@ const std::vector<string> Park::getPlotsID(const bool& isOccupied) {
 const std::vector<string> Park::getPlotsID(const int& level) {
     if (!this->_threadFinished) this->_t->join();
     std::vector<string> v;
+    this->_plotsList.classify();
     this->_plotsList.forEach([&](string first, string second) {
         if (this->_simpleGet(second, "level") == to_string(level))
             v.push_back(first);
@@ -119,6 +122,7 @@ const std::vector<string> Park::getPlotsID(const int& level) {
 const std::vector<string> Park::getPlotsID(const string& type) {
     if (!this->_threadFinished) this->_t->join();
     std::vector<string> v;
+    this->_plotsList.classify();
     this->_plotsList.forEach([&](string first, string second) {
         if (this->_simpleGet(second, "type") == type) v.push_back(first);
     });

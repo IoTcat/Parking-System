@@ -160,7 +160,7 @@ int main(int argc, char const* argv[]) {
                         int ss;
                         cin >> ss;
                         bool fin = true;
-                        if (ss = 0) fin = false;
+                        if (ss == 0) fin = false;
                         g_time = time(NULL);
                         return p->getPlotsID(tt, fin);
                     },
@@ -177,7 +177,7 @@ int main(int argc, char const* argv[]) {
                         int ss;
                         cin >> ss;
                         bool fin = true;
-                        if (ss = 0) fin = false;
+                        if (ss == 0) fin = false;
                         g_time = time(NULL);
                         return p->getPlotsID(tt, fin);
                     },
@@ -212,7 +212,7 @@ int main(int argc, char const* argv[]) {
                         int ss;
                         cin >> ss;
                         bool fin = true;
-                        if (ss = 0) fin = false;
+                        if (ss == 0) fin = false;
                         g_time = time(NULL);
                         return p->getPlotsID(tt, kk, fin);
                     },
@@ -227,7 +227,8 @@ int main(int argc, char const* argv[]) {
                         cin >> kk;
                         std::vector<string> v;
                         g_time = time(NULL);
-                        v.push_back(p->getPlotByCar(kk).getID());
+                        if(p->getPlotByCar(kk).getID() != "undefined")
+                            v.push_back(p->getPlotByCar(kk).getID());
                         return v;
                     },
                     [&](string s) -> Plot { return p->getPlot(s); });
@@ -317,7 +318,8 @@ int main(int argc, char const* argv[]) {
                         cin >> kk;
                         std::vector<string> v;
                         g_time = time(NULL);
-                        v.push_back(p->getCar(kk).getID());
+                        if(p->getPlot(kk).getCar() != "undefined" && p->getPlot(kk).getCar() != "null")   
+                            v.push_back(p->getPlot(kk).getCar());
                         return v;
                     },
                     [&](string s) -> Car { return p->getCar(s); });
