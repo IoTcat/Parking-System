@@ -450,6 +450,7 @@ int main(int argc, char const* argv[]) {
                 cin >> t_Type;
 
                 Plot pp = p->getPlot(t_PlotID);
+                cout << pp.showAll();
 
                 if (!p->updatePlot(pp, t_Type)) {
                     cout << endl << "Update Failure!!!" << endl;
@@ -709,6 +710,7 @@ void manualIni(Park& p) {
             cout << "The " << ii << "th hour = ";
             cin >> fee[ii];
         }
+        feeTable[i] = fee;
     }
 
     p.updateFeeTable(feeTable);

@@ -229,7 +229,7 @@ const bool Park::newCar(const string& licenseNum, const string& type,
         return false;
     }
 
-    if (this->isGoodType(type)) {
+    if (!this->isGoodType(type)) {
         msg += "Car " + licenseNum + " Wrong Type!!!";
         return false;
     }

@@ -253,7 +253,7 @@ private:
     };
 
     inline const bool isGoodType(const string& type) const {
-        return (bool)(find(this->_types.begin(), this->_types.end(), type) ==
+        return (bool)(find(this->_types.begin(), this->_types.end(), type) !=
                       this->_types.end());
     };
 };

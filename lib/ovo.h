@@ -714,6 +714,7 @@ namespace ovo{
                 if(indexList["_isExist"] == "NO"){
                     return o;
                 }
+                indexList.clear("_isExist");
                 if(indexList["__TABLE_INDEX__" + index] == "undefined"){
                     return o;
                 }
@@ -741,6 +742,7 @@ namespace ovo{
                 if(indexList["_isExist"] == "NO"){
                     return o;
                 }
+                indexList.clear("_isExist");
 
                 d.forEach([&](string index, string val){
 
@@ -763,6 +765,7 @@ namespace ovo{
                     return o;
                 }
 
+                indexList.clear("_isExist");
 
                 for(auto i : indexList){
                     o.push_back(this->getData(i.first));
