@@ -253,7 +253,8 @@ const bool Park::newCar(const string& licenseNum, const string& type,
 const bool Park::delCar(const string& licenseNum, string& msg) {
     if (!this->_threadFinished) this->_t->join();
 
-    if (!this->_carsList.isExist(licenseNum)) {
+    if (this->_carsList[licenseNum] == "undefined") {
+        this->_carsList.clear(licenseNum);
         msg += "Car " + licenseNum + " Not In Plot!!!";
         return false;
     }
@@ -272,6 +273,7 @@ const bool Park::delCar(const string& licenseNum, string& msg) {
 const std::vector<string> Park::getCarsID() {
     if (!this->_threadFinished) this->_t->join();
     std::vector<string> v;
+    this->_carsList.classify();
     this->_carsList.forEach(
         [&](string first, string second) { v.push_back(first); });
 
@@ -324,6 +326,12 @@ const std::vector<string> Park::getCarsID(const int& level,
 const bool Park::updatePlot(Plot& plot, const int& level) {
     if (!this->_threadFinished) this->_t->join();
 
+    if(this->_plotsList[plot.getID()] == "undefined"){
+
+        this->_plotsList.clear(plot.getID());
+        return false;
+    }
+
     if (level < 0 || level > this->_levels) {
         return false;
     }
@@ -340,6 +348,12 @@ const bool Park::updatePlot(Plot& plot, const int& level) {
 
 const bool Park::updatePlot(Plot& plot, const string& type) {
     if (!this->_threadFinished) this->_t->join();
+
+    if(this->_plotsList[plot.getID()] == "undefined"){
+
+        this->_plotsList.clear(plot.getID());
+        return false;
+    }
 
     if (!this->isGoodType(type)) {
         return false;
@@ -395,7 +409,7 @@ const bool Park::checkInByPlotID(const string& licenseNum, const string& type,
     return true;
 }
 
-int Park::checkOut(const string& licenseNum) {
+int Park::checkOut(const string& licenseNum, string& errMsg) {
     if (!this->_threadFinished) this->_t->join();
 
     if (!this->_carsList.isExist(licenseNum)) return -1;
@@ -426,7 +440,7 @@ int Park::checkOut(const string& licenseNum) {
 
     db.insertSQL(this->_d["log"], d);
 
-    this->delCar(licenseNum);
+    this->delCar(licenseNum, errMsg);
 
     this->_storeData();
 

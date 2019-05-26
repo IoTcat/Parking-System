@@ -66,7 +66,7 @@ class Park {
                        const int& level, string& msg);
     const bool checkInByPlotID(const string& licenseNum, const string& type,
                                const string& plotID, string& msg);
-    int checkOut(const string& licenseNum);
+    int checkOut(const string& licenseNum, string& errMsg);
 
     inline bool isExist() {
         if (this->_d["_isExist"] == "NO") {
@@ -209,6 +209,14 @@ class Park {
         d["date"] = date;
         return db.getSQL(this->_d["log"], d);
     };
+
+    inline const string showAll(){
+        return this->_d.showAll();
+    }
+
+    inline const string showFeeTableInfo(){
+        return this->_feeTable.showAll();
+    }
 
 private:
     ovo::data _d, _carsList, _plotsList;

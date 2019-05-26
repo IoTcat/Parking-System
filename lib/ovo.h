@@ -367,14 +367,14 @@ namespace ovo{
             }
             /* clear all elements */
             inline void clear(){
-                //this->_data.erase(this->_data.begin(),this->_data.end());
+                this->_data.erase(this->_data.begin(),this->_data.end());
             }
             /* clear elements */
             template <typename T>
             inline void clear(const T& key){
                 if(this->_data.count(this->toStr(key))){
                     map<string, string>::iterator t_iter = this->find(this->toStr(key));
-                    //this->_data.erase(t_iter);
+                    this->_data.erase(t_iter);
                 }
             }
             /* clear elements */
