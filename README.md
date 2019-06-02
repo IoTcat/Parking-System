@@ -1,5 +1,5 @@
 # Parking-System
-For EEE116 AS4.
+For EEE102 AS4.
 
 > Test Code is in the bin folder!!  
 
